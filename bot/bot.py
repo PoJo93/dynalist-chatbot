@@ -20,8 +20,8 @@ def bot(payload):
     dynalist_payload = {
                           "token": dynalist_token,
                           "index": 0,
-                          "content": "Get the book recommended by Jerry",
-                          "note": "Should be available in the city library, or on Amazon for around $25",
+                          "content": message,
+                          "note": "",
                           "checked": False
                         }
 
