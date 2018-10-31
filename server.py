@@ -13,4 +13,5 @@ app = Flask(__name__)
 def root():
   return bot(request)
 
-app.run(port=os.environ['PORT'])
+#app.run(port=os.environ['PORT'])
+app.run(port=5000)

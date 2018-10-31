@@ -2,25 +2,28 @@
 
 import os
 import recastai
+from flask import request
+import requests
 
 from flask import jsonify
 
+#Custom libraries
+import json
+
+
 def bot(payload):
-  connect = recastai.Connect(token=os.environ['REQUEST_TOKEN'], language=os.environ['LANGUAGE'])
-  request = recastai.Request(token=os.environ['REQUEST_TOKEN'])
+    request_content = json.loads(payload.get_data().decode('utf-8'))
+    print(request_content)
+    message = request_content['conversation']['memory']['message_content']
 
-  message = connect.parse_message(payload)
+    dynalist_token = 'WhqJkcbexDdQEl87cA5lEy2hFNIokQkj9iOev-ag7EJAPyUSDipPrzb0Hz6yJ9J6oIbyghDi_t_rWBUlS99CdnFCAixGnjko_4KUfZQpaIG4z0pcHVnWAgu53G1887SF'
+    dynalist_payload = {
+                          "token": dynalist_token,
+                          "index": 0,
+                          "content": "Get the book recommended by Jerry",
+                          "note": "Should be available in the city library, or on Amazon for around $25",
+                          "checked": False
+                        }
 
-  response = request.analyse_text(message.content)
-
-  intent = response.intent
-
-  if intent is None:
-    reply = "I'm sorry but I don't understand what you are talking about"
-  else:
-    reply = 'I understand that you talk about {}'.format(intent.slug)
-
-  replies = [{'type': 'text', 'content': reply}]
-  connect.send_message(replies, message.conversation_id)
-
-  return jsonify(status=200)
+    r = requests.post('https://dynalist.io/api/v1/inbox/add', json=dynalist_payload)
+    return jsonify(status=200)
