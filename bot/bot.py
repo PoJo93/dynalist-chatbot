@@ -13,33 +13,30 @@ import json
 
 def post_to_inbox(payload):
     print("inbox was activated")
-    return request_dynalist(payload, extract_content_inbox, 'https://dynalist.io/api/v1/inbox/add')
+    return request_dynalist(payload, 'https://dynalist.io/api/v1/inbox/add', False)
 
 def check_token_request(payload ):
     print("Check TOken was activated")
-    return request_dynalist(payload, extract_content_check_token, 'https://dynalist.io/api/v1/file/list')
+    return request_dynalist(payload, 'https://dynalist.io/api/v1/file/list', True)
 
 
-def request_dynalist(payload, extraction_method, api_adress):
-    message, token, conversation_memory = extraction_method(payload)
+def request_dynalist(payload, api_adress, check_token_only):
+    message, token, conversation_memory = extract_content(payload, check_token_only)
     payload = build_dynalist_payload(token, message)
     response = call_dynalist_api(api_adress, payload )
     return build_recast_response(response, conversation_memory)
 
 
-def extract_content_inbox(payload):
+def extract_content(payload, check_token):
     request_content = json.loads(payload.get_data().decode('utf-8'))
-    message = request_content['nlp']['source']
+    if check_token:
+        message=""
+    else:
+        message = request_content['nlp']['source']
     conversation_memory = request_content['conversation']['memory']
     token= conversation_memory.get('token')
     return  message, token , conversation_memory
 
-def extract_content_check_token(payload):
-    request_content = json.loads(payload.get_data().decode('utf-8'))
-    message = ""
-    conversation_memory = request_content['conversation']['memory']
-    token= request_content['nlp']['entities']['dynalist-token'][0]['raw']
-    return  message, token , conversation_memory
 
 def call_dynalist_api(api_adress,dynalist_payload):
     r = requests.post(api_adress, json=dynalist_payload)
