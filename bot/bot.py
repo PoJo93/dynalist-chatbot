@@ -21,18 +21,15 @@ def check_token_request(payload ):
 
 
 def request_dynalist(payload, api_adress, check_token_only):
-    message, token, conversation_memory = extract_content(payload, check_token_only)
-    payload = build_dynalist_payload(token, message)
+    message, token, conversation_memory = extract_content(payload)
+    payload = build_dynalist_payload(token, message, check_token_only)
     response = call_dynalist_api(api_adress, payload )
     return build_recast_response(response, conversation_memory)
 
 
-def extract_content(payload, check_token):
+def extract_content(payload):
     request_content = json.loads(payload.get_data().decode('utf-8'))
-    if check_token:
-        message=""
-    else:
-        message = request_content['nlp']['source']
+    message = request_content['nlp']['source']
     conversation_memory = request_content['conversation']['memory']
     token= conversation_memory.get('token')
     return  message, token , conversation_memory
@@ -59,15 +56,15 @@ def build_recast_response(response_dynalist, conversation_memory):
     return response_recast
 
 
-def build_dynalist_payload(dynalist_token, message):
-    if message is not "":
+def build_dynalist_payload(dynalist_token, message, check_token_only):
+    if check_token_only :
         dynalist_payload = {
-            "token": dynalist_token,
-            "content": message,
+            "token": dynalist_token
         }
     else:
         dynalist_payload = {
-            "token": dynalist_token
+            "token": dynalist_token,
+            "content": message,
         }
     return dynalist_payload
 
