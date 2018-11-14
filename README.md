@@ -39,7 +39,7 @@ Create an account on the [Recast.AI](https://recast.ai) platform.
 You can find the logic of the bot [here](https://recast.ai/pojo93/dynalist-inbox/)
 
 
-###Installation
+### Installation
 
 #### Local
 
@@ -74,7 +74,7 @@ easy_install `cat requirements.txt`
 - Paste it in the [Recast.AI](https://recast.ai) interface: Go to your bot page, click on the **RUN** tab and edit your `current bot webhook`
 - Chat with your bot on the channels you've configured ;)
 
-###SAP Clound Foundry
+### SAP Clound Foundry
 Currently it has all necessary files to be deployed under SAP Cloudfoundry. Follow [this](https://blogs.sap.com/2017/12/04/deploying-flaskbottle-python-app-rest-api-on-sap-cloud-foundry/) tutorial to set up the hosting on SAP Cloudfoundry
 
 
