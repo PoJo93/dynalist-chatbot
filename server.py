@@ -1,11 +1,11 @@
 #coding: utf-8
 
 import os
-import config
 
 from flask import Flask, request
 from bot import post_to_inbox, check_token_request
 
+port = int(os.getenv("PORT"))
 
 app = Flask(__name__)
 
@@ -17,5 +17,7 @@ def post_to_inbox_route():
 def check_token_route():
   return check_token_request(request)
 
-#app.run(port=os.environ['PORT'])
-app.run(port=5000)
+
+if __name__ == '__main__':
+   app.run(host='0.0.0.0', port=port)
+
