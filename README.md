@@ -4,9 +4,10 @@ A chatbot which can push messages from a channel like Telegram to your dynalist 
 
 > **Note:** This project is currently in beta version and can be modified at any time.
 
-##Test the bot
-###Add the bot 
-####Via Webchat
+
+## Test the bot
+### Add the bot 
+#### Via Webchat
 **Webchat script**
 
 ```javascript
@@ -23,12 +24,12 @@ id="recast-webchat"
 <meta name="viewport" content="width=device-width">
 ```
 
-####Via Telegram
+#### Via Telegram
 You can find it with the UserName [@DynalistInboxBot](t.me/DynalistInboxBot)
 
 
 ## Requirements for forking the bot
-###Setup
+### Setup
 ##### Recast.AI account
 
 Create an account on the [Recast.AI](https://recast.ai) platform.
@@ -40,7 +41,7 @@ You can find the logic of the bot [here](https://recast.ai/pojo93/dynalist-inbox
 
 ###Installation
 
-####Local
+#### Local
 
 First clone the project:
 ```bash
@@ -59,7 +60,7 @@ Using easy\_install
 easy_install `cat requirements.txt`
 ```
 
-##Deployment
+## Deployment
 
 
 ### Run locally
