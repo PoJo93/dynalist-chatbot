@@ -27,6 +27,9 @@ id="recast-webchat"
 #### Via Telegram
 You can find it with the UserName [@DynalistInboxBot](t.me/DynalistInboxBot)
 
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=8IVf0Ca5vPM
+" target="_blank"><img src="http://img.youtube.com/vi/8IVf0Ca5vPM/0.jpg" 
+alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 
 ## Requirements for forking the bot
 ### Setup
