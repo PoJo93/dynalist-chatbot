@@ -1,18 +1,19 @@
 # coding: utf-8
 
-import os
-import recastai
-from flask import request
-import requests
-
 from flask import jsonify
 #Custom libraries
-import json
+
+
+# both functions are doing the same on a different route
+# create an DynalistClient class that encapsulates the Dynalist API
+from bot.dynalist import call_dynalist_api, build_dynalist_note, build_dynalist_payload
+from bot.recast import extract_content
 
 
 def post_to_inbox(payload):
     print("inbox was activated")
-
+    # use keyword arguments instead of unnamed flags
+    # extract base URL and endpoint paths
     return request_dynalist(payload, 'https://dynalist.io/api/v1/inbox/add', False)
 
 def check_token_request(payload ):
@@ -22,26 +23,10 @@ def check_token_request(payload ):
 
 def request_dynalist(payload, api_adress, check_token_only):
     channel, timestamp, message, token, conversation_memory = extract_content(payload)
-    note = build_dynalist_note(channel=channel,contact=None,timestamp=timestamp )
+    note = build_dynalist_note(channel=channel, contact=None, timestamp=timestamp)
     payload = build_dynalist_payload(token, message, check_token_only, note)
-    response = call_dynalist_api(api_adress, payload )
+    response = call_dynalist_api(api_adress, payload)
     return build_recast_response(response, conversation_memory)
-
-
-def extract_content(payload):
-    request_content = json.loads(payload.get_data().decode('utf-8'))
-    print(request_content)
-    message = request_content['nlp']['source']
-    conversation_memory = request_content['conversation']['memory']
-    token= conversation_memory.get('token')
-    channel = conversation_memory.get('channel')
-    timestamp = request_content['nlp']['timestamp']
-    return  channel, timestamp, message, token , conversation_memory
-
-
-def call_dynalist_api(api_adress,dynalist_payload):
-    r = requests.post(api_adress, json=dynalist_payload)
-    return r
 
 
 def build_recast_response(response_dynalist, conversation_memory):
@@ -60,32 +45,4 @@ def build_recast_response(response_dynalist, conversation_memory):
     return response_recast
 
 
-def build_dynalist_payload(dynalist_token, message, check_token_only, note):
-    if check_token_only :
-        dynalist_payload = {
-            "token": dynalist_token
-        }
-    else:
-        dynalist_payload = {
-            "token": dynalist_token,
-            "content": message,
-            "note": note
-        }
-    return dynalist_payload
 
-
-
-def build_dynalist_note(channel,contact, timestamp):
-    if channel:
-        dynalist_channel = '@' + channel
-    else:
-        dynalist_channel = '@' + 'channel'
-
-    time = '!(' + timestamp + ')'
-
-    if contact:
-        contact = '@' + contact
-    else:
-        contact = '@' + 'AContact'
-
-    return '#message on {0} from {1} {2}'.format(dynalist_channel,contact,time)
