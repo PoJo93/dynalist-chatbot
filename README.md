@@ -2,6 +2,9 @@
 
 A chatbot which can push messages from a channel like Telegram to your dynalist inbox working with the [Recast.AI](https://recast.ai) platform.
 
+
+![Use Case Demonstration](/media/inbox_bot_usecase.gif)
+
 > **Note:** This project is currently in beta version and can be modified at any time.
 
 
@@ -27,6 +30,8 @@ id="recast-webchat"
 #### Via Telegram
 You can find it with the UserName [@DynInboxBot](https://t.me/dyninboxbot)
 
+
+![Setup Demonstration](/media/inbox_bot_setup.gif)
 
 
 ## Requirements for forking the bot
