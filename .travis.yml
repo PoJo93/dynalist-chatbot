@@ -1,0 +1,11 @@
+script: echo "hello"
+deploy:
+  provider: cloudfoundry
+  api: https://api.cf.us30.hana.ondemand.com
+  username: mail
+  organization: org
+  space: dev
+  on:
+    repo: PoJo93/dynalist-chatbot
+  password:
+    secure: o/fl/EbxNFKdkmAp0pLUo4c8OZcV2Vf31/8I3J9UFS90Ncj9NAX0J0EWhtHbCRVDp7j4mwVe2Uv4y6lpKiGA+V9+SDD1/ZXkfVGZaZzBNFKSwFCJek/tx6VE2IqJ2WMAXtqkKcI+JjMZMhMDGSd0uoFQ4mNj+e6R/KFcXJCN9fyIx6Jsnj3YuSx5SlZdzJ0yhlx2enEklWA8uHbucIwvuPt+otT+/m93K6IU5t9dF+qwYrjdid/CUg5y5MLeHy9o34IfoguR8C7Qw/AlnswBQCc58Mdtts7+zQVf9dbbNMtEua6O4dPyGh9wvf+3F7sDPdIGtVbG0TkOm6dkWey1q0L3WaiiLx3QieX4WjqSN3kQOgDFKdn1R/qU8nPpj/RYmBaa1rX5ogqCynzsaOYXMJO05d+VlWtnQ17g1nNvGO9W+PXBeimwHoOXYLCJk1P2C+r1r5thoYNIFA8OjwW+jBEAUVirYAqsoggwqw54C4nH1+RCH/xffrTYCDDJoonP9OgFjpIgqGCkgmifpkfhvNOt4dBquwj0nzXRplO1PDdN6eeFKYEUk299YO6xBsCirj9k2QBglTWsaHFMvK7mHOJnfX5wbj42nO4o2IZrCXNLBiE4YeMMwOoBEO1B55dKxXCLPGNKS0KHbxXrSrQt6T61P9xjPEXFHSgxKUwg/rQ=
