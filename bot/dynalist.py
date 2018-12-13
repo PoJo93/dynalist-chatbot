@@ -1,5 +1,5 @@
 import requests
-
+import typing
 
 class DynalistClient:
     #TODO add class description
@@ -48,14 +48,16 @@ class DynalistNote:
     def from_recast_conversation(cls, response):
         return DynalistNote(response.channel, response.timestamp, response.contact)
 
-    def __init__(self, channel, timestamp, contact):
+    def __init__(self, channel: str, timestamp: str, contact: str):
         self.channel = channel
         self.timestamp = timestamp
         self.contact = contact
 
     def __str__(self):
         if self.channel:
-            channel_str = '@' + self.channel
+            capitalized_channel_words = [x.capitalize() for x in self.channel.split()]
+            capitalized_channel = ''.join(capitalized_channel_words)
+            channel_str = '@' + capitalized_channel
         else:
             channel_str = '@' + 'channel'
 
