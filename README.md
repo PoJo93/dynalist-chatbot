@@ -58,7 +58,7 @@ Then, install the dependencies:
 
 Using pip
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 Using easy\_install
@@ -66,8 +66,11 @@ Using easy\_install
 easy_install `cat requirements.txt`
 ```
 
+You should use your local Python3 or setup a virtual environment.
+
 ## Deployment
 
+See the blog article which will soon come out. (The link will be posted here)
 
 ### Run locally
 
@@ -85,12 +88,13 @@ Currently it has all necessary files to be deployed under SAP Cloudfoundry. Foll
 
 
 
-
-
-
-
-
 ## Usage
+
+The chatbot should be self explenatory. 
+
+What it will do is saving the message/note you send it in your Dynalist Inbox in a comfortably formatted way.
+
+Try it out yourself!
 
 
 ## More
