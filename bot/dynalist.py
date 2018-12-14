@@ -2,7 +2,7 @@ import requests
 import typing
 
 class DynalistClient:
-    #TODO add class description
+    """This client handles the calls to the dynalist API enpoints"""
 
     def _call_api(self, recast_conversation, api):
         payload = api.build_api_request(self, recast_conversation=recast_conversation)
@@ -42,7 +42,7 @@ class InboxAddAPI(DynalistApiType):
 
 
 class DynalistNote:
-    #TODO add class description
+    """Building together a note to write down metadata about the message"""
 
     @classmethod
     def from_recast_conversation(cls, response):

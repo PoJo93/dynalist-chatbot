@@ -17,7 +17,7 @@ def build_response(recast_conversation, dynalist_response):
 
 
 class RecastConversation:
-    # TODO Add class description
+    """"Encapsulates the relevant attributes from a recast conversation"""
 
     @classmethod
     def from_json_payload(cls, payload: dict):

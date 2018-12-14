@@ -15,7 +15,7 @@ def post_to_inbox():
     return process_request(request, dynalist_client.call_inbox_add_api)
 
 
-# TODO add comment why not get
+# GET would be semantically the better option but doesn't work here as we have to submit a JSON payload
 @app.route("/auth/validate", methods=['POST'])
 def validate_token():
     return process_request(request, dynalist_client.call_check_token_api)
