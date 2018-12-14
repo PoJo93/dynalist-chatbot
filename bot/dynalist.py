@@ -32,11 +32,11 @@ class InboxAddAPI(DynalistApiType):
     address = 'https://dynalist.io/api/v1/inbox/add'
 
     def build_api_request(self, recast_conversation):
-        item = DynalistItem.from_recast_conversation(recast_conversation)
+        note = str(DynalistItem.from_recast_conversation(recast_conversation))
         return {
-            "token": item.get_token(),
-            "content": item.get_content(),
-            "note": item.get_note()
+            "token": recast_conversation.token,
+            "content": recast_conversation.message,
+            "note": note
         }
 
 
@@ -48,40 +48,26 @@ class DynalistItem:
     def from_recast_conversation(cls, response):
         return DynalistItem(response.channel, response.timestamp, response.contact, response.token, response.message)
 
-    def __init__(self, channel: str, timestamp: str, contact: str, token: str, content: str):
+    def __init__(self, channel: str, timestamp: str, contact: str, token: str, message: str):
         self.channel = channel
         self.timestamp = timestamp
         self.contact = contact
         self.token = token
-        self.content = content
-        self.note = ""
+        self.message
 
-    def get_note(self):
-        self.build_note()
-        self.note
-
-    def build_note(self):
+    def __str__(self):
         if self.channel:
             capitalized_channel_words = [x.capitalize() for x in self.channel.split()]
             capitalized_channel = ''.join(capitalized_channel_words)
             channel_str = '@' + capitalized_channel
         else:
             channel_str = '@' + 'channel'
+
         time_str = '!(' + self.timestamp + ')'
+
         if self.contact:
             contact_str = '@' + self.contact
         else:
             contact_str = '@' + 'AContact'
-        self.note = '#message on {0} from {1} {2}'.format(channel_str, contact_str, time_str)
 
-    def get_content(self):
-        return self.content
-
-    def get_token(self):
-        return self.token
-
-
-
-
-
-
+        return '#message on {0} from {1} {2}'.format(channel_str, contact_str, time_str)
