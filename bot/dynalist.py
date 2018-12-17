@@ -37,6 +37,19 @@ class InboxAddAPI(DynalistApiType):
 
     def build_api_request(self, conversation: RecastConversation):
         item = DynalistItem.from_recast_conversation(conversation)
+
+        map_entities = {
+            'person': item.format_person,
+            'datetime': item.format_datetime,
+            'location': item.format_location,
+            'email': item.format_email
+        }
+
+        for entity in conversation.entities:
+            processing_method = map_entities.get(entity.name)
+            if processing_method:
+                processing_method(entity)
+
         return {
             "token": item.get_token(),
             "content": item.get_content(),
@@ -61,7 +74,7 @@ class DynalistItem:
 
     def get_note(self):
         self.build_note()
-        self.note
+        return self.note
 
     def build_note(self):
         if self.channel:
@@ -69,8 +82,10 @@ class DynalistItem:
         else:
             channel_str = '@' + 'channel'
         time_str = '!(' + self.timestamp + ')'
-        if self.contact is '':
+        if not self.contact:
             contact_str = '@' + 'AContact'
+        else:
+            contact_str = self.contact
 
         self.note = '#message on {0} from {1} {2}'.format(channel_str, contact_str, time_str)
 

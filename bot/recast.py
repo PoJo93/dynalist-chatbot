@@ -27,7 +27,7 @@ class RecastConversation:
         token = conversation_memory.get('token')
         channel = conversation_memory.get('channel')
         timestamp = payload['nlp']['timestamp']
-        entities = payload['entities']
+        entities = payload['nlp']['entities']
         contact = conversation_memory.get('contact')
         return RecastConversation(message=message,
                                   conversation_memory=conversation_memory,
