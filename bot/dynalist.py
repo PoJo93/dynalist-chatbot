@@ -89,9 +89,60 @@ class DynalistItem:
            if not self.replace_contact(raw, pattern_custom, formatted_name):
                self.content = self.content.replace(raw, formatted_name)
 
+    def format_datetime(self,
+                        formatted: str,
+                        iso: str,
+                        accuracy: str,
+                        chronology: str,
+                        state: str,
+                        raw: str,
+                        confidence: float):
+
+        # return cuttoff index from iso
+        accuracy_dict = {
+                        'year': 4,
+                        'month': 7,
+                        'week': 7,
+                        'day': 10,
+                        'halfday': 10,
+                        'hour': 13,
+                        'min': 16,
+                        'sec': 19,
+                        'now': 19
+        }
+        closest_accuracy = accuracy.rpartition(',')[2]
+        formatted_date = iso[:accuracy_dict[closest_accuracy]]
+        dynalist_formatted_date = ' (!({0}))'.format(formatted_date)
+        self.content = (raw + dynalist_formatted_date).join(self.content.split(raw))
+
+    def format_location(self,
+                        formatted: str,
+                        lat: float,
+                        lng: float,
+                        place: str,
+                        type: str,
+                        country: str,
+                        raw: str,
+                        confidence: float):
+        google_url = 'https://www.google.com/maps/place/?q=place_id:' + place
+        self.insert_link_in_content(google_url, raw)
 
 
 
+    def format_email(self,
+                     local: str,
+                     tag: str,
+                     domain: str,
+                     raw: str,
+                     confidence: float):
+        mail_url = 'mailto:' + raw
+        self.insert_link_in_content(mail_url, raw)
+
+
+
+    def insert_link_in_content(self, url, raw):
+        link_format = '[{0}]({1})'
+        self.content = (link_format.format(raw, url)).join(self.content.split(raw))
 
     # TODO move to utils
     def to_add_tag(self, str):
