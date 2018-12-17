@@ -23,6 +23,7 @@ def validate_token():
 def process_request(request_recast, clientApiMethod):
     recast_json = json.loads(request_recast.get_data().decode('utf-8'))
     recast_conversation = recast.RecastConversation.from_json_payload(recast_json)
+
     response = clientApiMethod(recast_conversation)
     return recast.build_response(recast_conversation, response)
 
