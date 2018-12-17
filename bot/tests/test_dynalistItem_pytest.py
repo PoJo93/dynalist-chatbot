@@ -104,3 +104,23 @@ def test_format_email():
       })
     item.format_email(email_entity)
     assert 'Hey please message [someone@example.com](mailto:someone@example.com) for the meeting' == item.content
+
+def test_format_phone_international():
+    item = my_dynalist_item('Hey call me on +12025550159')
+    email_entity = Entity('phone', {
+        "number": "+12025550159",
+        "raw": "+12025550159",
+        "confidence": 0.99
+      })
+    item.format_phone(email_entity)
+    assert 'Hey call me on [🇺🇸 +1 202-555-0159](tel:+12025550159)' == item.content
+
+def test_format_phone_national_US():
+    item = my_dynalist_item('Hey call me on 2025550159')
+    email_entity = Entity('phone', {
+        "number": "2025550159",
+        "raw": "2025550159",
+        "confidence": 0.99
+      })
+    item.format_phone(email_entity)
+    assert 'Hey call me on [(202) 555-0159](tel:2025550159)' == item.content

@@ -2,6 +2,10 @@ import requests
 import typing
 from bot import Entity
 from bot import RecastConversation
+import phonenumbers
+import phonenumbers.geocoder
+from emojiflags.lookup import lookup
+from phonenumbers.phonenumberutil import region_code_for_number
 
 class DynalistClient:
     """This client handles the calls to the dynalist API enpoints"""
@@ -42,7 +46,8 @@ class InboxAddAPI(DynalistApiType):
             'person': item.format_person,
             'datetime': item.format_datetime,
             'location': item.format_location,
-            'email': item.format_email
+            'email': item.format_email,
+            'phone': item.format_phone,
         }
 
         for entity in conversation.entities:
@@ -132,9 +137,26 @@ class DynalistItem:
         mail_url = 'mailto:' + entity.raw
         self.insert_link_in_content(mail_url, entity.raw)
 
-    def insert_link_in_content(self, url: str, raw: str):
+    def format_phone(self, entity: Entity):
+        # formatphonenumber
+        formatted_number = phonenumbers.parse(entity.number, None, _check_region=False)
+
+        if formatted_number.country_code: #international Number provided
+            region_code = region_code_for_number(formatted_number)
+            flag_emoji = lookup(region_code)
+            formatted_number_str =  flag_emoji + ' ' + phonenumbers.format_number(formatted_number,
+                                                             phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+        else:
+            formatted_number = phonenumbers.parse(entity.number, 'US')
+            formatted_number_str = phonenumbers.format_number(formatted_number, phonenumbers.PhoneNumberFormat.NATIONAL)
+        phone_url = 'tel:' + entity.number
+        self.insert_link_in_content(phone_url,entity.raw, formatted_number_str)
+
+    def insert_link_in_content(self, url: str, raw: str, link_title=None):
+        if not link_title:
+                link_title=raw
         link_format = '[{0}]({1})'
-        self.content = (link_format.format(raw, url)).join(self.content.split(raw))
+        self.content = (link_format.format(link_title, url)).join(self.content.split(raw))
 
     # TODO move to utils
     def to_add_tag(self, tag: str):
