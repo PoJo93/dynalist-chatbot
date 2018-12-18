@@ -124,3 +124,48 @@ def test_format_phone_national_US():
       })
     item.format_phone(email_entity)
     assert 'Hey call me on [(202) 555-0159](tel:2025550159)' == item.content
+
+def test_format_url_determiner_this():
+    item = my_dynalist_item('Hey can you please order this jeans for me https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764')
+    email_entity = Entity('url', {
+        "scheme": "https",
+        "host": "www.makersandriders.com",
+        "path": "/collections/pants-1/products/washable-wool-jeans",
+        "params": None,
+        "query": "variant=41342373764",
+        "fragment": None,
+        "raw": "https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764",
+        "confidence": 0.99
+      })
+    item.format_url(email_entity)
+    assert 'Hey can you please order [this](https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764) jeans for me' == item.content
+
+def test_format_url_determiner_a():
+    item = my_dynalist_item('Hey can you please order a jeans for me https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764')
+    email_entity = Entity('url', {
+        "scheme": "https",
+        "host": "www.makersandriders.com",
+        "path": "/collections/pants-1/products/washable-wool-jeans",
+        "params": None,
+        "query": "variant=41342373764",
+        "fragment": None,
+        "raw": "https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764",
+        "confidence": 0.99
+      })
+    item.format_url(email_entity)
+    assert 'Hey can you please order [a](https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764) jeans for me' == item.content
+
+def test_format_url_determiner_None():
+    item = my_dynalist_item('Check out https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764')
+    email_entity = Entity('url', {
+        "scheme": "https",
+        "host": "www.makersandriders.com",
+        "path": "/collections/pants-1/products/washable-wool-jeans",
+        "params": None,
+        "query": "variant=41342373764",
+        "fragment": None,
+        "raw": "https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764",
+        "confidence": 0.99
+      })
+    item.format_url(email_entity)
+    assert 'Check out [www.makersandriders.com](https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764)' == item.content

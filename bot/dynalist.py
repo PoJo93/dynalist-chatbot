@@ -6,6 +6,9 @@ import phonenumbers
 import phonenumbers.geocoder
 from emojiflags.lookup import lookup
 from phonenumbers.phonenumberutil import region_code_for_number
+import nltk
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 
 class DynalistClient:
     """This client handles the calls to the dynalist API enpoints"""
@@ -48,6 +51,7 @@ class InboxAddAPI(DynalistApiType):
             'location': item.format_location,
             'email': item.format_email,
             'phone': item.format_phone,
+            'url': item.format_url
         }
 
         for entity in conversation.entities:
@@ -152,11 +156,33 @@ class DynalistItem:
         phone_url = 'tel:' + entity.number
         self.insert_link_in_content(phone_url,entity.raw, formatted_number_str)
 
+    def format_url(self, entity: Entity):
+        tokens = nltk.word_tokenize(self.content)
+        tagged_tokens = nltk.pos_tag(tokens)
+        determiner = [token for token in tagged_tokens if token[1] == 'DT']
+        if determiner:
+            determiner_word = determiner[-1][0] #we take the last one as we hope that the last determiner refers to the URL
+                                            #optional find the determiner nearest to the url
+            self.content = self.content.replace(" " + entity.raw, '')
+            self.insert_link_in_content(entity.raw, determiner_word)
+        else:
+            self.insert_link_in_content(entity.raw, entity.raw, entity.host)
+
     def insert_link_in_content(self, url: str, raw: str, link_title=None):
         if not link_title:
                 link_title=raw
-        link_format = '[{0}]({1})'
+        if ' {0} '.format(raw) in self.content:
+            link_format = ' [{0}]({1}) '
+            raw = ' {0} '.format(raw)
+        elif '{0} '.format(raw) in self.content:
+            link_format = '[{0}]({1}) '
+            raw = '{0} '.format(raw)
+        elif ' {0}'.format(raw) in self.content:
+            link_format = ' [{0}]({1})'
+            raw = ' {0}'.format(raw)
+
         self.content = (link_format.format(link_title, url)).join(self.content.split(raw))
+
 
     # TODO move to utils
     def to_add_tag(self, tag: str):
