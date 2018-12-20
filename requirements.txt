@@ -1,5 +1,6 @@
-# Server
-flask~=0.12.0
-
-# APIs
-recastai~=4.0.0
+phonenumbers
+requests
+emojiflags
+nltk
+pytest
+flask

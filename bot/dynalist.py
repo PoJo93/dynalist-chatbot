@@ -7,6 +7,7 @@ import phonenumbers.geocoder
 from emojiflags.lookup import lookup
 from phonenumbers.phonenumberutil import region_code_for_number
 import nltk
+
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 
