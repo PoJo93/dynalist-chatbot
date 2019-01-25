@@ -107,27 +107,27 @@ def test_format_email():
 
 def test_format_phone_international():
     item = my_dynalist_item('Hey call me on +12025550159')
-    email_entity = Entity('phone', {
+    phone_entity = Entity('phone', {
         "number": "+12025550159",
         "raw": "+12025550159",
         "confidence": 0.99
       })
-    item.format_phone(email_entity)
+    item.format_phone(phone_entity)
     assert 'Hey call me on [🇺🇸 +1 202-555-0159](tel:+12025550159)' == item.content
 
 def test_format_phone_national_US():
     item = my_dynalist_item('Hey call me on 2025550159')
-    email_entity = Entity('phone', {
+    phone_entity = Entity('phone', {
         "number": "2025550159",
         "raw": "2025550159",
         "confidence": 0.99
       })
-    item.format_phone(email_entity)
+    item.format_phone(phone_entity)
     assert 'Hey call me on [(202) 555-0159](tel:2025550159)' == item.content
 
 def test_format_url_determiner_this():
     item = my_dynalist_item('Hey can you please order this jeans for me https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764')
-    email_entity = Entity('url', {
+    url_entity = Entity('url', {
         "scheme": "https",
         "host": "www.makersandriders.com",
         "path": "/collections/pants-1/products/washable-wool-jeans",
@@ -137,12 +137,12 @@ def test_format_url_determiner_this():
         "raw": "https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764",
         "confidence": 0.99
       })
-    item.format_url(email_entity)
+    item.format_url(url_entity)
     assert 'Hey can you please order [this](https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764) jeans for me' == item.content
 
 def test_format_url_determiner_a():
     item = my_dynalist_item('Hey can you please order a jeans for me https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764')
-    email_entity = Entity('url', {
+    url_entity = Entity('url', {
         "scheme": "https",
         "host": "www.makersandriders.com",
         "path": "/collections/pants-1/products/washable-wool-jeans",
@@ -152,12 +152,12 @@ def test_format_url_determiner_a():
         "raw": "https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764",
         "confidence": 0.99
       })
-    item.format_url(email_entity)
+    item.format_url(url_entity)
     assert 'Hey can you please order [a](https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764) jeans for me' == item.content
 
 def test_format_url_determiner_None():
     item = my_dynalist_item('Check out https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764')
-    email_entity = Entity('url', {
+    url_entity = Entity('url', {
         "scheme": "https",
         "host": "www.makersandriders.com",
         "path": "/collections/pants-1/products/washable-wool-jeans",
@@ -167,5 +167,30 @@ def test_format_url_determiner_None():
         "raw": "https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764",
         "confidence": 0.99
       })
-    item.format_url(email_entity)
+    item.format_url(url_entity)
     assert 'Check out [www.makersandriders.com](https://www.makersandriders.com/collections/pants-1/products/washable-wool-jeans?variant=41342373764)' == item.content
+
+def test_format_distance_meter():
+    item = my_dynalist_item('Please add to our presentation that the Gran Canyon is six thousand feet deep')
+    distance_entity = Entity('distance', {
+        "scalar": 6000,
+        "unit": "ft",
+        "meters": 1828.8,
+        "raw": "six thousand feet",
+        "confidence": 0.94
+      })
+    item.format_distance(distance_entity)
+    assert 'Please add to our presentation that the Gran Canyon is 6000 ft/`1828.8 m` deep' == item.content
+
+def test_format_distance_km():
+    item = my_dynalist_item('Make sure to bring enough food as we will hike for twelve miles')
+    distance_entity = Entity('distance', {
+        "scalar": 12,
+        "unit": "mi",
+        "meters": 19312.08,
+        "raw": "twelve miles",
+        "confidence": 0.92
+      })
+    item.format_distance(distance_entity)
+
+    assert 'Make sure to bring enough food as we will hike for 12 mi/`19.3 km`' == item.content

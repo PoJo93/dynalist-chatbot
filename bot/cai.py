@@ -2,9 +2,9 @@
 from flask import jsonify
 
 
-def build_response(recast_conversation, dynalist_response):
+def build_response(cai_conversation, dynalist_response):
     dynalist_response_json = dynalist_response.json()
-    memory_response = recast_conversation.conversation_memory
+    memory_response = cai_conversation.conversation_memory
     memory_response['status_code'] = dynalist_response_json.get('_code', 'NoResponse')
     memory_response['status_message'] = dynalist_response_json.get('_msg', '')
     response = jsonify(
@@ -16,8 +16,8 @@ def build_response(recast_conversation, dynalist_response):
     return response
 
 
-class RecastConversation:
-    """"Encapsulates the relevant attributes from a recast conversation"""
+class CAIConversation:
+    """"Encapsulates the relevant attributes from a cai conversation"""
 
     @classmethod
     def from_json_payload(cls, payload: dict):
@@ -29,13 +29,13 @@ class RecastConversation:
         timestamp = payload['nlp']['timestamp']
         entities = payload['nlp']['entities']
         contact = conversation_memory.get('contact')
-        return RecastConversation(message=message,
-                                  conversation_memory=conversation_memory,
-                                  token=token,
-                                  channel=channel,
-                                  timestamp=timestamp,
-                                  contact=contact,
-                                  entities=entities)
+        return CAIConversation(message=message,
+                               conversation_memory=conversation_memory,
+                               token=token,
+                               channel=channel,
+                               timestamp=timestamp,
+                               contact=contact,
+                               entities=entities)
 
     def __init__(self, message: str, conversation_memory: str, token: str, channel: str, timestamp: str, contact: str, entities):
         self.message = message

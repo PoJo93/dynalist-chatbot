@@ -1,7 +1,7 @@
 import requests
 import typing
 from bot import Entity
-from bot import RecastConversation
+from bot import CAIConversation
 import phonenumbers
 import phonenumbers.geocoder
 from emojiflags.lookup import lookup
@@ -14,37 +14,37 @@ nltk.download('averaged_perceptron_tagger')
 class DynalistClient:
     """This client handles the calls to the dynalist API enpoints"""
 
-    def _call_api(self, recast_conversation, api):
-        payload = api.build_api_request(self, conversation=recast_conversation)
+    def _call_api(self, cai_conversation, api):
+        payload = api.build_api_request(self, conversation=cai_conversation)
         print(payload)
         return requests.post(api.address, json=payload)
 
-    def call_check_token_api(self, recast_conversation):
-        return self._call_api(recast_conversation=recast_conversation, api=CheckTokenAPI)
+    def call_check_token_api(self, cai_conversation):
+        return self._call_api(cai_conversation=cai_conversation, api=CheckTokenAPI)
 
-    def call_inbox_add_api(self, recast_conversation):
-        return self._call_api(recast_conversation=recast_conversation, api=InboxAddAPI)
+    def call_inbox_add_api(self, cai_conversation):
+        return self._call_api(cai_conversation=cai_conversation, api=InboxAddAPI)
 
 
 class DynalistApiType:
     address = None
 
-    def build_api_request (self, conversation: RecastConversation):
+    def build_api_request (self, conversation: CAIConversation):
         pass
 
 
 class CheckTokenAPI(DynalistApiType):
     address = 'https://dynalist.io/api/v1/file/list'
 
-    def build_api_request(self, conversation: RecastConversation):
+    def build_api_request(self, conversation: CAIConversation):
         return {"token": conversation.token}
 
 
 class InboxAddAPI(DynalistApiType):
     address = 'https://dynalist.io/api/v1/inbox/add'
 
-    def build_api_request(self, conversation: RecastConversation):
-        item = DynalistItem.from_recast_conversation(conversation)
+    def build_api_request(self, conversation: CAIConversation):
+        item = DynalistItem.from_cai_conversation(conversation)
 
         map_entities = {
             'person': item.format_person,
@@ -71,7 +71,7 @@ class DynalistItem:
     """Building together a note to write down metadata about the message"""
 
     @classmethod
-    def from_recast_conversation(cls, response):
+    def from_cai_conversation(cls, response):
         return DynalistItem(response.channel, response.timestamp, response.contact, response.token, response.message)
 
     def __init__(self, channel: str, timestamp: str, contact: str, token: str, content: str):
@@ -143,7 +143,6 @@ class DynalistItem:
         self.insert_link_in_content(mail_url, entity.raw)
 
     def format_phone(self, entity: Entity):
-        # formatphonenumber
         formatted_number = phonenumbers.parse(entity.number, None, _check_region=False)
 
         if formatted_number.country_code: #international Number provided
@@ -166,24 +165,48 @@ class DynalistItem:
                                             #optional find the determiner nearest to the url
             self.content = self.content.replace(" " + entity.raw, '')
             self.insert_link_in_content(entity.raw, determiner_word)
+
         else:
             self.insert_link_in_content(entity.raw, entity.raw, entity.host)
 
+    def format_distance(self, entity: Entity):
+        pass
+
+        if entity.unit not in ('km', 'm', 'cm', 'mm'): #metrical units
+            format = '{0} {1}/`{2} {3}`'
+            metrical_scalar =0
+            metrical_unit =0
+            self.insert_format_in_content(entity.raw,
+                                          format,
+                                          entity.scalar,
+                                          entity.unit,
+                                          metrical_scalar,
+                                          metrical_unit)
+
+
+
     def insert_link_in_content(self, url: str, raw: str, link_title=None):
         if not link_title:
-                link_title=raw
-        if ' {0} '.format(raw) in self.content:
-            link_format = ' [{0}]({1}) '
-            raw = ' {0} '.format(raw)
-        elif '{0} '.format(raw) in self.content:
-            link_format = '[{0}]({1}) '
-            raw = '{0} '.format(raw)
-        elif ' {0}'.format(raw) in self.content:
-            link_format = ' [{0}]({1})'
-            raw = ' {0}'.format(raw)
+                link_title = raw
 
-        self.content = (link_format.format(link_title, url)).join(self.content.split(raw))
+        link_format = '[{0}]({1})'
+        self.insert_format_in_content(raw, link_format, link_title, url)
 
+    def insert_format_in_content(self, raw: str, string_format: str, *parameters):
+        left_whitespace_format = ' {0}'
+        right_whitespace_format = '{0} '
+        left_right_whitespace_format = ' {0} '
+
+        if left_right_whitespace_format.format(raw) in self.content:
+            string_format = left_right_whitespace_format.format(string_format)
+            raw = left_right_whitespace_format.format(raw)
+        elif right_whitespace_format.format(raw) in self.content:
+            string_format = right_whitespace_format.format(string_format)
+            raw = right_whitespace_format.format(raw)
+        elif left_whitespace_format.format(raw) in self.content:
+            string_format = left_whitespace_format.format(string_format)
+            raw = left_whitespace_format.format(raw)
+        self.content = (string_format.format(*parameters)).join(self.content.split(raw))
 
     # TODO move to utils
     def to_add_tag(self, tag: str):

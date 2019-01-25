@@ -1,6 +1,6 @@
 # Dynalist Chatbot
 
-A chatbot which can push messages from a channel like Telegram to your dynalist inbox working with the [Recast.AI](https://recast.ai) platform.
+A chatbot which can push messages from a channel like Telegram to your dynalist inbox working with  [SAP Conversational AI](https://cai.tools.sap) platform.
 
 
 ![Use Case Demonstration](/media/inbox_bot_usecase.gif)
@@ -14,10 +14,10 @@ A chatbot which can push messages from a channel like Telegram to your dynalist 
 **Webchat script**
 
 ```javascript
-<script src="https://cdn.recast.ai/webchat/webchat.js"
+<script src="https://cdn.cai.tools.sap/webchat/webchat.js"
 channelId="a4b980bb-7d48-451a-8dff-f1c57849c676"
 token="48374a061050040522cfa81d56a0002e"
-id="recast-webchat"
+id="cai-webchat"
 ></script>
 ```
 
@@ -36,13 +36,13 @@ You can find it with the UserName [@DynInboxBot](https://t.me/dyninboxbot)
 
 ## Requirements for forking the bot
 ### Setup
-##### Recast.AI account
+##### CAI account
 
-Create an account on the [Recast.AI](https://recast.ai) platform.
+Create an account on the [SAP Conversational AI](https://cai.tools.sap) platform.
 
 ##### Inspect the bot
 
-You can find the logic of the bot [here](https://recast.ai/pojo93/dynalist-inbox/)
+You can find the logic of the bot [here](https://cai.tools.sap/pojo93/dynalist-inbox/)
 
 
 ### Installation
@@ -80,7 +80,7 @@ See the blog article which will soon come out. (The link will be posted here)
 - Download [ngrok](https://ngrok.com/)
 - Launch: `ngrok http 5000`
 - Copy the url ngrok outputs
-- Paste it in the [Recast.AI](https://recast.ai) interface: Go to your bot page, click on the **RUN** tab and edit your `current bot webhook`
+- Paste it in the [CAI](https://cai.tools.sap) interface: Go to your bot page, click on the **RUN** tab and edit your `current bot webhook`
 - Chat with your bot on the channels you've configured ;)
 
 ### SAP Clound Foundry
@@ -98,6 +98,6 @@ Try it out yourself!
 
 
 ## More
-You can view the whole API reference at [man.recast.ai](https://man.recast.ai).
+You can view the whole API reference at [man.cai.tools.sap](https://man.cai.tools.sap).
 
 

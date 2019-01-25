@@ -3,7 +3,7 @@
 import os, json
 
 from flask import Flask, request
-from bot import recast, dynalist
+from bot import cai, dynalist
 
 
 port = int(os.getenv("PORT"))
@@ -20,12 +20,17 @@ def post_to_inbox():
 def validate_token():
     return process_request(request, dynalist_client.call_check_token_api)
 
-def process_request(request_recast, clientApiMethod):
-    recast_json = json.loads(request_recast.get_data().decode('utf-8'))
-    recast_conversation = recast.RecastConversation.from_json_payload(recast_json)
+@app.route("/dialogflow/test", methods=['POST'])
+def debug_dialogflow():
+    request_json =json.loads(request.get_data().decode('utf-8'))
+    print(json.dumps(request_json, indent=5, sort_keys=False))
 
-    response = clientApiMethod(recast_conversation)
-    return recast.build_response(recast_conversation, response)
+def process_request(request_cai, clientApiMethod):
+    cai_json = json.loads(request_cai.get_data().decode('utf-8'))
+    cai_conversation = cai.CAIConversation.from_json_payload(cai_json)
+
+    response = clientApiMethod(cai_conversation)
+    return cai.build_response(cai_conversation, response)
 
 
 if __name__ == '__main__':

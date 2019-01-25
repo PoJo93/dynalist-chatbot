@@ -7,7 +7,7 @@ from flask import jsonify
 # both functions are doing the same on a different route
 # create an DynalistClient class that encapsulates the Dynalist API
 from bot.dynalist import call_dynalist_api, build_dynalist_note, build_dynalist_payload
-from bot.recast import extract_content
+from bot.cai import extract_content
 
 
 def post_to_inbox(payload):
@@ -26,23 +26,23 @@ def request_dynalist(payload, api_adress, check_token_only):
     note = build_dynalist_note(channel=channel, contact=None, timestamp=timestamp)
     payload = build_dynalist_payload(token, message, check_token_only, note)
     response = call_dynalist_api(api_adress, payload)
-    return build_recast_response(response, conversation_memory)
+    return build_cai_response(response, conversation_memory)
 
 
-def build_recast_response(response_dynalist, conversation_memory):
+def build_cai_response(response_dynalist, conversation_memory):
     response_dynalist = response_dynalist.json()
     #print(response_dynalist)
     memory_response = conversation_memory
     memory_response['status_code'] = response_dynalist.get('_code', 'NoResponse')
     memory_response['status_message'] = response_dynalist.get('_msg', '')
     #print(memory_response)
-    response_recast = jsonify(
+    response_cai = jsonify(
         status=200,
         conversation={
             'memory': memory_response
         }
     )
-    return response_recast
+    return response_cai
 
 
 
